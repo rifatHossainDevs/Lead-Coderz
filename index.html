@@ -468,76 +468,116 @@
  
     <section id="contact" class="contact section">
 
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Contact</h2>
-        <p>Have an Idea? Let’s Talk</p>
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Contact</h2>
+    <p>Have an Idea? Let’s Talk</p>
+  </div>
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="row gy-4">
+
+      <div class="col-lg-6">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
+          <i class="bi bi-geo-alt"></i>
+          <h3>Address</h3>
+          <p>Road- 07, Block- D, Mirpur- 12, Dhaka, Bangladesh</p>
+        </div>
       </div>
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="col-lg-3 col-md-6">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
+          <i class="bi bi-telephone"></i>
+          <h3>Call Us</h3>
+          <p>+880 1750-057251</p>
+        </div>
+      </div>
 
-        <div class="row gy-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
+          <i class="bi bi-envelope"></i>
+          <h3>Email Us</h3>
+          <p>info@leadcoderz.com</p>
+        </div>
+      </div>
 
-          <div class="col-lg-6">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
-              <i class="bi bi-geo-alt"></i>
-              <h3>Address</h3>
-              <p>Road- 07, Block- D, Mirpur- 12, Dhaka, Bangladesh</p>
-            </div>
-          </div>
+    </div>
 
-          <div class="col-lg-3 col-md-6">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
-              <i class="bi bi-telephone"></i>
-              <h3>Call Us</h3>
-              <p>+880 1750-057251</p>
-            </div>
-          </div>
+    <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
+      <div class="row gy-4">
 
-          <div class="col-lg-3 col-md-6">
-            <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
-              <i class="bi bi-envelope"></i>
-              <h3>Email Us</h3>
-              <p>info@leadcoderz.com</p>
-            </div>
-          </div>
-
+        <div class="col-md-6">
+          <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
         </div>
 
-        <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
-          <div class="row gy-4">
+        <div class="col-md-6">
+          <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
+        </div>
 
-            <div class="col-md-6">
-              <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
-            </div>
+        <div class="col-md-12">
+          <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
+        </div>
 
-            <div class="col-md-6 ">
-              <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
-            </div>
+        <div class="col-md-12">
+          <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
+        </div>
 
-            <div class="col-md-12">
-              <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
-            </div>
+        <div class="col-md-12 text-center">
+          <div class="loading">Loading</div>
+          <div class="error-message"></div>
+          <div class="sent-message">Your message has been sent. Thank you!</div>
 
-            <div class="col-md-12">
-              <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
-            </div>
-
-            <div class="col-md-12 text-center">
-              <div class="loading">Loading</div>
-              <div class="error-message"></div>
-              <div class="sent-message">Your message has been sent. Thank you!</div>
-
-              <button type="submit">Send Message</button>
-            </div>
-
-          </div>
-        </form>
+          <button type="submit">Send Message</button>
+        </div>
 
       </div>
+    </form>
 
-    </section>
+  </div>
 
+</section>
 
+<!-- ✅ JavaScript safely wrapped -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.querySelector('.php-email-form');
+
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const loading = form.querySelector('.loading');
+    const error = form.querySelector('.error-message');
+    const sent = form.querySelector('.sent-message');
+
+    loading.style.display = 'block';
+    error.style.display = 'none';
+    sent.style.display = 'none';
+
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      body: formData
+    }).then(response => response.json())
+      .then(data => {
+        loading.style.display = 'none';
+        if (data.status === 'success') {
+          sent.style.display = 'block';
+          form.reset();
+        } else {
+          error.innerText = data.message;
+          error.style.display = 'block';
+        }
+      }).catch(() => {
+        loading.style.display = 'none';
+        error.innerText = "Something went wrong.";
+        error.style.display = 'block';
+      });
+  });
+});
+</script>
 
 
 

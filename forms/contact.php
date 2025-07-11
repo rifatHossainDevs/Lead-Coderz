@@ -1,41 +1,41 @@
 <?php
-  /**
-  * Requires the "PHP Email Form" library
-  * The "PHP Email Form" library is available only in the pro version of the template
-  * The library should be uploaded to: vendor/php-email-form/php-email-form.php
-  * For more info and help: https://bootstrapmade.com/php-email-form/
-  */
+// contact.php
 
-  // Replace contact@example.com with your real receiving email address
-  $receiving_email_address = 'contact@example.com';
+header('Content-Type: application/json'); // Send response as JSON
 
-  if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
-    include( $php_email_form );
-  } else {
-    die( 'Unable to load the "PHP Email Form" Library!');
-  }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include 'db.php'; // Include DB connection
 
-  $contact = new PHP_Email_Form;
-  $contact->ajax = true;
-  
-  $contact->to = $receiving_email_address;
-  $contact->from_name = $_POST['name'];
-  $contact->from_email = $_POST['email'];
-  $contact->subject = $_POST['subject'];
+    // Sanitize input
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $subject = trim($_POST['subject'] ?? '');
+    $message = trim($_POST['message'] ?? '');
 
-  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-  /*
-  $contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-  );
-  */
+    // Basic validation
+    if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+        echo json_encode(["status" => "error", "message" => "All fields are required."]);
+        exit;
+    }
 
-  $contact->add_message( $_POST['name'], 'From');
-  $contact->add_message( $_POST['email'], 'Email');
-  $contact->add_message( $_POST['message'], 'Message', 10);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["status" => "error", "message" => "Invalid email address."]);
+        exit;
+    }
 
-  echo $contact->send();
+    // Prepare and insert into DB
+    $stmt = $conn->prepare("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $name, $email, $subject, $message);
+
+    if ($stmt->execute()) {
+        echo json_encode(["status" => "success", "message" => "Your message has been sent."]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Could not save your message."]);
+    }
+
+    $stmt->close();
+    $conn->close();
+} else {
+    echo json_encode(["status" => "error", "message" => "Invalid request."]);
+}
 ?>
